@@ -1,0 +1,21 @@
+.container {
+  height: 100vh;
+}
+
+.subContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 70px;
+}
+
+.appHeader {
+  box-shadow: 0 10px 10px -10px rgba(35, 47, 62, 0.2);
+  padding: 10px;
+}
+
+.appTitle {
+  text-align: center;
+  color: #4b4a4a;
+}
