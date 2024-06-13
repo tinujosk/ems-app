@@ -1,0 +1,58 @@
+scalar Date
+
+# enum Status {
+#   New
+#   Assigned
+#   Fixed
+#   Closed
+# }
+
+# type Issue {
+#   id: Int!
+#   status: Status!
+#   owner: String!
+#   effort: Int!
+#   created: Date!
+#   due: Date!
+#   title: String
+# }
+
+# input InputIssue {
+#   id: Int!
+#   status: Status
+#   owner: String
+#   effort: Int
+#   created: Date
+#   due: Date
+#   title: String
+# }
+
+#  firstName: { type: String, required: true },
+#   lastName: String,
+#   doj: { type: Date, default: new Date(), required: true },
+#   title: { type: String, required: true },
+#   department: { type: String, required: true },
+#   employeeType: { type: String, required: true },
+#   currentStatus: { type: Number, default: 1, required: true },
+
+type Employee {
+  id: String!
+  firstName: String!
+  lastName: String!
+  age: Int!
+  doj: Date!
+  title: String!
+  department: String!
+  employeeType: String!
+  currentStatus: Int!
+}
+
+type Query {
+  getEmployees: [Employee!]!
+}
+
+# type Mutation {
+#   addIssue(issue: InputIssue!): Issue!
+#   editIssue(issue: InputIssue!): Issue
+#   deleteIssue(id: Int!): Issue
+# }

@@ -1,8 +1,7 @@
 import React from 'react';
-import employeeData from '../employeeList.json';
 import styles from './EmployeeTable.module.css';
 
-function EmployeeTable() {
+function EmployeeTable({ employees }) {
   return (
     <table class={styles.table}>
       <thead>
@@ -18,13 +17,13 @@ function EmployeeTable() {
         </tr>
       </thead>
       <tbody>
-        {employeeData.map(employee => {
+        {employees.map(employee => {
           return (
             <tr>
               <td>{employee.firstName}</td>
               <td>{employee.lastName}</td>
               <td>{employee.age}</td>
-              <td>{employee.dateOfJoining}</td>
+              <td>{new Date(employee.doj).toDateString()}</td>
               <td>{employee.title}</td>
               <td>{employee.department}</td>
               <td>{employee.employeeType}</td>

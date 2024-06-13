@@ -1,66 +1,30 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { GraphQLScalarType, Kind } from 'graphql';
-import { Employee } from './models/schema';
+
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+import { resolvers } from './graphql/resolvers/resolvers.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
-const typeDefs = `
+const typeDefs = fs.readFileSync(
+  path.join(__dirname, 'graphql/schemas/schema.graphql'),
+  'utf-8'
+);
 
-    scalar Date
+const server = new ApolloServer({ typeDefs, resolvers });
 
-    enum Title {
-        Employee
-        Manager
-        Director
-        VP
-    }
+server.start().then(function () {
+  server.applyMiddleware({ app, path: '/graphql', cors: true });
+});
 
-    enum Department {
-        IT
-        Marketing
-        HR
-        Engineering
-    }
+const port = process.env.PORT || 3002;
 
-    enum EmployeeType {
-        Fulltime
-        Parttime
-        Contract
-        Seasonal
-    }
-
-    type Issue {
-        id:Int! ,
-        status: Status!,
-        owner: String!,
-        effort: Int!,
-        created: Date!,
-        due: Date!,
-        title: String,
-    }
-
-    input InputIssue {
-        id:Int! ,
-        status: Status,
-        owner: String,
-        effort: Int,
-        created: Date,
-        due: Date,
-        title: String,
-    }
-
-    type Query {
-      getIssues: [Issue!]!
-    }
-
-    type Mutation {
-      addIssue(issue:InputIssue!):Issue!
-      editIssue(issue:InputIssue!):Issue
-      deleteIssue(id:Int!):Issue
-    }
-
-
-`;
-
-const resolvers = app.listen(process.env.PORT || 3000, () => {});
+// Start listening
+app.listen(port, () => {
+  console.log(`GraphQL Server is running at http://localhost:${port}`);
+});
