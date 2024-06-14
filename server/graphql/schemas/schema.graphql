@@ -22,7 +22,6 @@ enum EmployeeType {
 }
 
 input InputEmployee {
-  # id: String!
   firstName: String!
   lastName: String!
   age: Int!
@@ -51,6 +50,4 @@ type Query {
 
 type Mutation {
   addEmployee(employee: InputEmployee!): Employee!
-  # editIssue(issue: InputIssue!): Issue
-  # deleteIssue(id: Int!): Issue
 }

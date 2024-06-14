@@ -1,1 +1,1 @@
-export const nameRegex = /^[A-Za-z]+$/;
+export const nameRegex = /^[A-Za-z\s]+$/;

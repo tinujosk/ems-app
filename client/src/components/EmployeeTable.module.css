@@ -4,12 +4,13 @@
   border-collapse: collapse;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
-  margin-bottom: 50px;
 }
 
 .table thead {
-  background-color: #49517d;
   color: #fff;
+  position: sticky;
+  top: 0;
+  background: #49517d;
 }
 
 .table th,

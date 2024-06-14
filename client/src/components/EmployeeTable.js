@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './EmployeeTable.module.css';
+import TableRow from './EmployeeRow';
 
 function EmployeeTable({ employees }) {
   return (
@@ -17,19 +18,8 @@ function EmployeeTable({ employees }) {
         </tr>
       </thead>
       <tbody>
-        {employees.map(employee => {
-          return (
-            <tr>
-              <td>{employee.firstName}</td>
-              <td>{employee.lastName}</td>
-              <td>{employee.age}</td>
-              <td>{new Date(employee.doj).toDateString()}</td>
-              <td>{employee.title}</td>
-              <td>{employee.department}</td>
-              <td>{employee.employeeType}</td>
-              <td>{employee.currentStatus === 1 ? 'Working' : 'Resigned'}</td>
-            </tr>
-          );
+        {employees.map((employee, idx) => {
+          return <TableRow key={idx} rowData={employee} />;
         })}
       </tbody>
     </table>

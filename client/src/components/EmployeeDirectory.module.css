@@ -10,6 +10,16 @@
   margin: 70px;
 }
 
+.tableContainer {
+  display: flex;
+  justify-content: center;
+  max-height: 300px;
+  overflow: scroll;
+  margin-bottom: 50px;
+  width: 100%;
+  max-width: 1200px;
+}
+
 .appHeader {
   box-shadow: 0 10px 10px -10px rgba(35, 47, 62, 0.2);
   padding: 10px;
@@ -17,5 +27,11 @@
 
 .appTitle {
   text-align: center;
+  color: #4b4a4a;
+}
+
+.noData {
+  font-size: 20px;
+  font-weight: 700;
   color: #4b4a4a;
 }

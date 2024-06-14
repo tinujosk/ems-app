@@ -1,45 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './EmployeeCreate.module.css';
 import { nameRegex } from '../util';
 
 function EmployeeCreate({ setOneEmployee }) {
-  const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    age: '',
-    doj: '',
-    title: '',
-    department: '',
-    employeeType: '',
-    currentStatus: 1, // Initially make the currentStatus as 1 (Working)
-  });
   const [errors, setErrors] = useState({});
 
   const errorClasses = `${styles.generalError} ${
     !Object.keys(errors).length && styles.displayNone
   }`;
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setForm({
-      ...form,
-      [name]: value.trim(),
-    });
-  };
-
   const handleSubmit = async e => {
     e.preventDefault();
-    if (validate()) {
-      console.log('Form is valid, submitting...', form);
-      const updatedForm = {
-        ...form,
-        age: parseInt(form.age),
+    const form = e.target;
+
+    if (validate(form)) {
+      const employee = {
+        firstName: form.firstName.value,
+        lastName: form.lastName.value,
+        age: parseInt(form.age.value),
+        doj: form.doj.value,
+        title: form.title.value,
+        department: form.department.value,
+        employeeType: form.employeeType.value,
+        currentStatus: 1, // Setting currentStatus as 1(Working)
       };
-      await setOneEmployee(updatedForm);
+
+      await setOneEmployee(employee);
+      form.reset();
     }
   };
 
-  const validate = () => {
+  const validate = form => {
     let errors = {};
     const nameMapping = {
       firstName: 'First Name',
@@ -51,21 +42,22 @@ function EmployeeCreate({ setOneEmployee }) {
       employeeType: 'Employee Type',
     };
 
-    Object.keys(form).forEach(field => {
-      if (form[field] === '') {
+    Object.keys(nameMapping).forEach(field => {
+      const fieldValue = form[field].value;
+      if (fieldValue === '') {
         errors[field] = `${nameMapping[field]} is required`;
       } else {
         switch (field) {
           case 'firstName':
           case 'lastName':
-            if (!nameRegex.test(form[field])) {
+            if (!nameRegex.test(fieldValue)) {
               errors[field] = `${nameMapping[field]} is not valid`;
             } else {
               delete errors[field];
             }
             break;
           case 'age':
-            if (parseInt(form[field]) < 20 || parseInt(form[field]) > 70) {
+            if (parseInt(fieldValue) < 20 || parseInt(fieldValue) > 70) {
               errors[
                 field
               ] = `${nameMapping[field]}  should be between 20 and 70`;
@@ -95,7 +87,6 @@ function EmployeeCreate({ setOneEmployee }) {
               id='firstName'
               name='firstName'
               placeholder='First Name'
-              onChange={handleChange}
             />
             <span className={styles.error}>{errors.firstName}</span>
           </div>
@@ -105,18 +96,11 @@ function EmployeeCreate({ setOneEmployee }) {
               id='lastName'
               name='lastName'
               placeholder='Last Name'
-              onChange={handleChange}
             />
             <span className={styles.error}>{errors.lastName}</span>
           </div>
           <div className={styles.formGroup}>
-            <input
-              type='number'
-              id='age'
-              name='age'
-              placeholder='Age'
-              onChange={handleChange}
-            />
+            <input type='number' id='age' name='age' placeholder='Age' />
             <span className={styles.error}>{errors.age}</span>
           </div>
           <div className={styles.formGroup}>
@@ -125,13 +109,12 @@ function EmployeeCreate({ setOneEmployee }) {
               id='doj'
               name='doj'
               placeholder='Date of Joining'
-              onChange={handleChange}
             />
             <span className={styles.error}>{errors.doj}</span>
           </div>
           <div className={styles.formGroup}>
-            <select id='title' name='title' onChange={handleChange}>
-              <option value='' disabled selected>
+            <select id='title' name='title' defaultValue={''}>
+              <option value='' disabled>
                 Title
               </option>
               <option value='Employee'>Employee</option>
@@ -142,8 +125,8 @@ function EmployeeCreate({ setOneEmployee }) {
             <span className={styles.error}>{errors.title}</span>
           </div>
           <div className={styles.formGroup}>
-            <select id='department' name='department' onChange={handleChange}>
-              <option value='' disabled selected>
+            <select id='department' name='department' defaultValue={''}>
+              <option value='' disabled>
                 Department
               </option>
               <option value='IT'>IT</option>
@@ -154,12 +137,8 @@ function EmployeeCreate({ setOneEmployee }) {
             <span className={styles.error}>{errors.department}</span>
           </div>
           <div className={styles.formGroup}>
-            <select
-              id='employeeType'
-              name='employeeType'
-              onChange={handleChange}
-            >
-              <option value='' disabled selected>
+            <select id='employeeType' name='employeeType' defaultValue={''}>
+              <option value='' disabled>
                 Employee Type
               </option>
               <option value='FullTime'>FullTime</option>

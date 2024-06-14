@@ -4,7 +4,8 @@ import EmployeeCreate from './EmployeeCreate';
 import EmployeeTable from './EmployeeTable';
 import styles from './EmployeeDirectory.module.css';
 
-async function fetchData() {
+// Fetch Employees data
+async function fetchEmployees() {
   const data = await fetch('http://localhost:3002/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -16,11 +17,11 @@ async function fetchData() {
   });
 
   const json = await data.json();
-  return json.data.getEmployees;
+  return json?.data?.getEmployees;
 }
 
+// Add a new Employee
 async function postEmployee(employee) {
-  console.log('strict check', employee);
   const data = await fetch('http://localhost:3002/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -33,8 +34,7 @@ async function postEmployee(employee) {
   });
 
   const json = await data.json();
-  console.log('checking add employee', json);
-  return json.data.addEmployee;
+  return json?.data?.addEmployee;
 }
 
 function EmployeeDirectory() {
@@ -42,16 +42,16 @@ function EmployeeDirectory() {
 
   useEffect(() => {
     const apiFunction = async () => {
-      const data = await fetchData();
+      const data = await fetchEmployees();
       setEmployees(data);
     };
     apiFunction();
   }, []);
 
   const setOneEmployee = async employee => {
-    employee = await postEmployee(employee);
-    console.log('Adding issue...', employee);
-    setEmployees([...employees, employee]);
+    await postEmployee(employee);
+    const data = await fetchEmployees();
+    setEmployees(data);
   };
 
   return (
@@ -61,7 +61,15 @@ function EmployeeDirectory() {
       </div>
       <div className={styles.subContainer}>
         <EmployeeSearch />
-        <EmployeeTable employees={employees} />
+        <div className={styles.tableContainer}>
+          {employees.length ? (
+            <EmployeeTable employees={employees} />
+          ) : (
+            <div className={styles.noData}>
+              No employees! Please add using the below form
+            </div>
+          )}
+        </div>
         <EmployeeCreate setOneEmployee={setOneEmployee} />
       </div>
     </div>

@@ -91,9 +91,3 @@ button:hover {
   margin-top: 10px;
   color: rgb(223, 59, 59);
 }
-
-/* @media (max-width: 600px) {
-  #employeeForm {
-    grid-template-columns: 1fr;
-  }
-} */
