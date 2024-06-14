@@ -1,39 +1,37 @@
 scalar Date
 
-# enum Status {
-#   New
-#   Assigned
-#   Fixed
-#   Closed
-# }
+enum Title {
+  Employee
+  Manager
+  Director
+  VP
+}
 
-# type Issue {
-#   id: Int!
-#   status: Status!
-#   owner: String!
-#   effort: Int!
-#   created: Date!
-#   due: Date!
-#   title: String
-# }
+enum Department {
+  IT
+  Marketing
+  HR
+  Engineering
+}
 
-# input InputIssue {
-#   id: Int!
-#   status: Status
-#   owner: String
-#   effort: Int
-#   created: Date
-#   due: Date
-#   title: String
-# }
+enum EmployeeType {
+  FullTime
+  PartTime
+  Contract
+  Seasonal
+}
 
-#  firstName: { type: String, required: true },
-#   lastName: String,
-#   doj: { type: Date, default: new Date(), required: true },
-#   title: { type: String, required: true },
-#   department: { type: String, required: true },
-#   employeeType: { type: String, required: true },
-#   currentStatus: { type: Number, default: 1, required: true },
+input InputEmployee {
+  # id: String!
+  firstName: String!
+  lastName: String!
+  age: Int!
+  doj: Date!
+  title: Title!
+  department: Department!
+  employeeType: EmployeeType!
+  currentStatus: Int!
+}
 
 type Employee {
   id: String!
@@ -51,8 +49,8 @@ type Query {
   getEmployees: [Employee!]!
 }
 
-# type Mutation {
-#   addIssue(issue: InputIssue!): Issue!
-#   editIssue(issue: InputIssue!): Issue
-#   deleteIssue(id: Int!): Issue
-# }
+type Mutation {
+  addEmployee(employee: InputEmployee!): Employee!
+  # editIssue(issue: InputIssue!): Issue
+  # deleteIssue(id: Int!): Issue
+}

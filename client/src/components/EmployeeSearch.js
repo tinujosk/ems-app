@@ -3,11 +3,11 @@ import styles from './EmployeeSearch.module.css';
 
 function EmployeeSearch() {
   return (
-    <div class={styles.searchContainer}>
+    <div className={styles.searchContainer}>
       <input
         type='text'
         id='search'
-        class={styles.searchInput}
+        className={styles.searchInput}
         placeholder='Start typing to search..'
       />
     </div>

@@ -3,7 +3,7 @@ import styles from './EmployeeTable.module.css';
 
 function EmployeeTable({ employees }) {
   return (
-    <table class={styles.table}>
+    <table className={styles.table}>
       <thead>
         <tr>
           <th>First Name</th>
@@ -27,7 +27,7 @@ function EmployeeTable({ employees }) {
               <td>{employee.title}</td>
               <td>{employee.department}</td>
               <td>{employee.employeeType}</td>
-              <td>{employee.currentStatus}</td>
+              <td>{employee.currentStatus === 1 ? 'Working' : 'Resigned'}</td>
             </tr>
           );
         })}
