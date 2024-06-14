@@ -10,7 +10,7 @@ function TableRow({ rowData }) {
       <td>{rowData.title}</td>
       <td>{rowData.department}</td>
       <td>{rowData.employeeType}</td>
-      <td>{rowData.currentStatus === 1 ? 'Working' : 'Resigned'}</td>
+      <td>{rowData.currentStatus === 1 ? 'Working' : 'Retired'}</td>
     </tr>
   );
 }
