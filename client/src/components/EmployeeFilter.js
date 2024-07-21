@@ -9,19 +9,21 @@ export default function EmployeeFilter() {
   const type = searchParams.get('Type');
 
   return (
-    <div>
+    <div className='filterContainer'>
       <Link to={{ pathname: '/employees', search: '?Type=FullTime' }}>
         FullTime Employees
       </Link>
       <Link to='/employees'>Reset Filter</Link>
-
       <select
         name='type'
-        value={type || 'FullTime'}
+        value={type || ''}
         onChange={e => {
           navigate(`/employees?Type=${e.target.value}`);
         }}
       >
+        <option value='' disabled>
+          Employee Type
+        </option>
         <option value='FullTime'>FullTime</option>
         <option value='PartTime'>PartTime</option>
         <option value='Contract'>Contract</option>

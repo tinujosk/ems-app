@@ -9,35 +9,21 @@ import '../App.css';
 
 // Fetch Employees data
 async function fetchEmployees(type) {
-  const data = await fetch('http://localhost:3002/graphql', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      query: `query {
-          getEmployees(type:${type}){id, firstName, lastName, age, doj, title, department, employeeType, currentStatus}
-        }`,
-    }),
-  });
+  const query = `query {
+  getEmployees(type:${type}){id, firstName, lastName, age, doj, title, department, employeeType, currentStatus}
+  }`;
 
-  const json = await data.json();
-  return json?.data?.getEmployees;
+  const data = await graphQLCommand(query);
+  return data?.getEmployees;
 }
 
 // Add a new Employee
 async function postEmployee(employee) {
-  const data = await fetch('http://localhost:3002/graphql', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      query: `mutation addEmployee($input:InputEmployee!) {
-            addEmployee(employee: $input) {firstName, lastName, age, doj, title, department, employeeType, currentStatus}
-         }`,
-      variables: { input: employee },
-    }),
-  });
+  const query = `mutation addEmployee($input:InputEmployee!) {
+  addEmployee(employee: $input) {firstName, lastName, age, doj, title, department, employeeType, currentStatus}
+  }`;
 
-  const json = await data.json();
-  return json?.data?.addEmployee;
+  await graphQLCommand(query, { input: employee });
 }
 
 function EmployeeDirectory() {
@@ -63,18 +49,25 @@ function EmployeeDirectory() {
     const query = `mutation {
       deleteEmployee(id: "${id}") 
     }`;
-    const result = await graphQLCommand(query);
-    if (result.deleteEmployee) {
-      const data = await fetchEmployees(type);
-      setEmployees(data);
+    const isConfirmed = window.confirm(
+      'Are you sure you want to delete this employee?'
+    );
+    if (isConfirmed) {
+      const result = await graphQLCommand(query);
+      if (result.deleteEmployee) {
+        const data = await fetchEmployees(type);
+        setEmployees(data);
+      }
     }
   };
 
   return (
     <div className='container'>
       <div className='subContainer'>
-        <EmployeeSearch />
-        <EmployeeFilter />
+        <div className='toolbarContainer'>
+          <EmployeeSearch />
+          <EmployeeFilter />
+        </div>
         <div className='tableContainer'>
           {employees.length ? (
             <EmployeeTable

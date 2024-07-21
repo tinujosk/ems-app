@@ -1,41 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import EmployeeForm from './EmployeeForm';
+import { graphQLCommand } from '../util';
 import '../App.css';
 
 //Add a new Employee
 async function fetchEmployee(id) {
-  const data = await fetch('http://localhost:3002/graphql', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      query: `query { 
-        getEmployee(id: "${id}") {
-           id, firstName, lastName, age, doj, title, department, employeeType, currentStatus 
-          } 
-        }`,
-    }),
-  });
+  const query = `query { 
+  getEmployee(id: "${id}") {
+     id, firstName, lastName, age, doj, title, department, employeeType, currentStatus 
+    } 
+  }`;
 
-  const json = await data.json();
-  return json?.data?.getEmployee;
+  const data = await graphQLCommand(query);
+  return data?.getEmployee;
 }
 
-// Add a new Employee
+// Edit Employee
 async function postEmployee(id, employee) {
-  const data = await fetch('http://localhost:3002/graphql', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      query: `mutation editEmployee($id:String!, $employee:EditInputEmployee!) {
-        editEmployee(id: $id, employee: $employee) {title, department, currentStatus}
-         }`,
-      variables: { id, employee },
-    }),
-  });
+  const query = `mutation editEmployee($id:String!, $employee:EditInputEmployee!) {
+  editEmployee(id: $id, employee: $employee) {title, department, currentStatus}
+   }`;
 
-  const json = await data.json();
-  return json?.data?.editEmployee;
+  const data = await graphQLCommand(query, { id, employee });
+  return data?.editEmployee;
 }
 
 function EmployeeEdit() {

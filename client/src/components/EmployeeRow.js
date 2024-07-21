@@ -22,8 +22,7 @@ function TableRow({ rowData, deleteHandler }) {
           }}
         >
           Delete
-        </Link>{' '}
-        |
+        </Link>
       </td>
     </tr>
   );
