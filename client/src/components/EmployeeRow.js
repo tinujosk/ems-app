@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from "react-router-dom";
+import '../App.css';
 
-function TableRow({ rowData }) {
+function TableRow({ rowData, deleteEmployee }) {
   return (
     <tr>
       <td>{rowData.firstName}</td>
@@ -11,6 +13,13 @@ function TableRow({ rowData }) {
       <td>{rowData.department}</td>
       <td>{rowData.employeeType}</td>
       <td>{rowData.currentStatus === 1 ? 'Working' : 'Retired'}</td>
+      <td>
+        <Link to={`view/${rowData.id}`}>View</Link> |
+        <Link to={`edit/${rowData.id}`}>Edit</Link> |
+        <Link onClick={() => {
+          deleteEmployee(rowData.id)
+        }}>Delete</Link> |
+      </td>
     </tr>
   );
 }

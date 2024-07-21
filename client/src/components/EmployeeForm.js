@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import styles from './EmployeeCreate.module.css';
 import { nameRegex } from '../util';
+import '../App.css';
 
-function EmployeeCreate({ setOneEmployee }) {
+function EmployeeForm({ apiFunction, editMode, values }) {
   const [errors, setErrors] = useState({});
 
-  const errorClasses = `${styles.generalError} ${
-    !Object.keys(errors).length && styles.displayNone
-  }`;
+  const errorClasses = `generalError ${!Object.keys(errors).length && 'displayNone'
+    }`;
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -25,7 +24,7 @@ function EmployeeCreate({ setOneEmployee }) {
         currentStatus: 1, // Setting currentStatus as 1(Working)
       };
 
-      await setOneEmployee(employee);
+      await apiFunction(employee);
       form.reset();
     }
   };
@@ -76,45 +75,48 @@ function EmployeeCreate({ setOneEmployee }) {
   };
 
   return (
-    <div className={styles.formContainer}>
+    <div className='formContainer'>
       <div className={errorClasses}>Please resolve the errors in the form</div>
       <form id='employeeForm' onSubmit={handleSubmit}>
-        <legend className={styles.formLegend}>Add New Employee </legend>
-        <fieldset className={styles.employeeForm}>
-          <div className={styles.formGroup}>
+        <legend className='formLegend'>{editMode ? 'Edit Employee' : 'Add New Employee'} </legend>
+        <fieldset className='employeeForm'>
+          <div className='formGroup'>
             <input
               type='text'
               id='firstName'
               name='firstName'
               placeholder='First Name'
+              value={values?.firstName}
             />
-            <span className={styles.error}>{errors.firstName}</span>
+            <span className='error'>{errors.firstName}</span>
           </div>
-          <div className={styles.formGroup}>
+          <div className='formGroup'>
             <input
               type='text'
               id='lastName'
               name='lastName'
               placeholder='Last Name'
+              value={values?.lastName}
             />
-            <span className={styles.error}>{errors.lastName}</span>
+            <span className='error'>{errors.lastName}</span>
           </div>
-          <div className={styles.formGroup}>
+          <div className='formGroup'>
             <input type='number' id='age' name='age' placeholder='Age' />
-            <span className={styles.error}>{errors.age}</span>
+            <span className='error'>{errors.age}</span>
           </div>
-          <div className={styles.formGroup}>
+          <div className='formGroup'>
             <input
               type='date'
               id='doj'
               name='doj'
               placeholder='Date of Joining'
+              value={values?.doj}
             />
-            <span className={styles.error}>{errors.doj}</span>
+            <span className='error'>{errors.doj}</span>
           </div>
-          <div className={styles.formGroup}>
+          <div className='formGroup'>
             <select id='title' name='title' defaultValue={''}>
-              <option value='' disabled>
+              <option value={values?.title} disabled>
                 Title
               </option>
               <option value='Employee'>Employee</option>
@@ -122,11 +124,11 @@ function EmployeeCreate({ setOneEmployee }) {
               <option value='Director'>Director</option>
               <option value='VP'>VP</option>
             </select>
-            <span className={styles.error}>{errors.title}</span>
+            <span className='error'>{errors.title}</span>
           </div>
-          <div className={styles.formGroup}>
+          <div className='formGroup'>
             <select id='department' name='department' defaultValue={''}>
-              <option value='' disabled>
+              <option value={values?.department} disabled>
                 Department
               </option>
               <option value='IT'>IT</option>
@@ -134,11 +136,11 @@ function EmployeeCreate({ setOneEmployee }) {
               <option value='HR'>HR</option>
               <option value='Engineering'>Engineering</option>
             </select>
-            <span className={styles.error}>{errors.department}</span>
+            <span className='error'>{errors.department}</span>
           </div>
-          <div className={styles.formGroup}>
+          <div className='formGroup'>
             <select id='employeeType' name='employeeType' defaultValue={''}>
-              <option value='' disabled>
+              <option value={values?.employeeType} disabled>
                 Employee Type
               </option>
               <option value='FullTime'>FullTime</option>
@@ -146,7 +148,7 @@ function EmployeeCreate({ setOneEmployee }) {
               <option value='Contract'>Contract</option>
               <option value='Seasonal'>Seasonal</option>
             </select>
-            <span className={styles.error}>{errors.employeeType}</span>
+            <span className='error'>{errors.employeeType}</span>
           </div>
           <button type='submit'>Submit</button>
         </fieldset>
@@ -155,4 +157,4 @@ function EmployeeCreate({ setOneEmployee }) {
   );
 }
 
-export default EmployeeCreate;
+export default EmployeeForm;

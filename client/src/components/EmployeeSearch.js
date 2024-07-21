@@ -1,13 +1,13 @@
 import React from 'react';
-import styles from './EmployeeSearch.module.css';
+import '../App.css';
 
 function EmployeeSearch() {
   return (
-    <div className={styles.searchContainer}>
+    <div className='searchContainer'>
       <input
         type='text'
         id='search'
-        className={styles.searchInput}
+        className='searchInput'
         placeholder='Start typing to search..'
       />
     </div>

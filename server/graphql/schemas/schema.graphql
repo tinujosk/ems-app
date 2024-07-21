@@ -46,8 +46,11 @@ type Employee {
 
 type Query {
   getEmployees: [Employee!]!
+  getOneEmployee(id: String!): Employee
 }
 
 type Mutation {
   addEmployee(employee: InputEmployee!): Employee!
+  editEmployee(id:String!, Employee:InputEmployee!):Employee
+  deleteEmployee(id:String!):String
 }

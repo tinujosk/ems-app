@@ -1,10 +1,10 @@
 import React from 'react';
-import styles from './EmployeeTable.module.css';
 import TableRow from './EmployeeRow';
+import '../App.css';
 
 function EmployeeTable({ employees }) {
   return (
-    <table className={styles.table}>
+    <table className='table'>
       <thead>
         <tr>
           <th>First Name</th>
@@ -15,6 +15,7 @@ function EmployeeTable({ employees }) {
           <th>Department</th>
           <th>Employee Type</th>
           <th>Current Status</th>
+          <th>Operations</th>
         </tr>
       </thead>
       <tbody>

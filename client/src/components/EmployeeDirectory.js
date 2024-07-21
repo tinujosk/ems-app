@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import EmployeeSearch from './EmployeeSearch';
-import EmployeeCreate from './EmployeeCreate';
+import EmployeeForm from './EmployeeForm';
 import EmployeeTable from './EmployeeTable';
-import styles from './EmployeeDirectory.module.css';
+import '../App.css';
 
 // Fetch Employees data
 async function fetchEmployees() {
@@ -11,7 +11,7 @@ async function fetchEmployees() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       query: `query {
-          getEmployees{firstName, lastName, age, doj, title, department, employeeType, currentStatus}
+          getEmployees{id, firstName, lastName, age, doj, title, department, employeeType, currentStatus}
         }`,
     }),
   });
@@ -55,22 +55,19 @@ function EmployeeDirectory() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.appHeader}>
-        <h1 className={styles.appTitle}>Employee Management System</h1>
-      </div>
-      <div className={styles.subContainer}>
+    <div className='container'>
+      <div className='subContainer'>
         <EmployeeSearch />
-        <div className={styles.tableContainer}>
+        <div className='tableContainer'>
           {employees.length ? (
             <EmployeeTable employees={employees} />
           ) : (
-            <div className={styles.noData}>
+            <div className='noData'>
               No employees! Please add using the below form
             </div>
           )}
         </div>
-        <EmployeeCreate setOneEmployee={setOneEmployee} />
+        <EmployeeForm apiFunction={setOneEmployee} />
       </div>
     </div>
   );
