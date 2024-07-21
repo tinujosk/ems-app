@@ -2,7 +2,7 @@ import React from 'react';
 import TableRow from './EmployeeRow';
 import '../App.css';
 
-function EmployeeTable({ employees }) {
+function EmployeeTable({ employees, deleteHandler }) {
   return (
     <table className='table'>
       <thead>
@@ -20,7 +20,13 @@ function EmployeeTable({ employees }) {
       </thead>
       <tbody>
         {employees.map((employee, idx) => {
-          return <TableRow key={idx} rowData={employee} />;
+          return (
+            <TableRow
+              key={idx}
+              rowData={employee}
+              deleteHandler={deleteHandler}
+            />
+          );
         })}
       </tbody>
     </table>
