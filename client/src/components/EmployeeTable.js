@@ -1,10 +1,10 @@
 import React from 'react';
 import TableRow from './EmployeeRow';
-import '../App.css';
+import { Table } from 'react-bootstrap';
 
 function EmployeeTable({ employees, deleteHandler }) {
   return (
-    <table className='table'>
+    <Table>
       <thead>
         <tr>
           <th>First Name</th>
@@ -29,7 +29,7 @@ function EmployeeTable({ employees, deleteHandler }) {
           );
         })}
       </tbody>
-    </table>
+    </Table>
   );
 }
 

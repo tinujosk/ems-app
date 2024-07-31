@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import EmployeeForm from './EmployeeForm';
 import { graphQLCommand } from '../util';
-import '../App.css';
+import { Container } from 'react-bootstrap';
 
-//Add a new Employee
+//Fetch Employee
 async function fetchEmployee(id) {
   const query = `query { 
   getEmployee(id: "${id}") {
@@ -51,22 +51,14 @@ function EmployeeEdit() {
   };
 
   return (
-    <div className='container'>
-      <div className='subContainer'>
-        <EmployeeForm
-          apiFunction={editOneEmployee}
-          values={employee}
-          editMode
-          disableFields={[
-            'firstName',
-            'lastName',
-            'age',
-            'doj',
-            'employeeType',
-          ]}
-        />
-      </div>
-    </div>
+    <Container className='p-5'>
+      <EmployeeForm
+        apiFunction={editOneEmployee}
+        values={employee}
+        editMode
+        disableFields={['firstName', 'lastName', 'age', 'doj', 'employeeType']}
+      />
+    </Container>
   );
 }
 

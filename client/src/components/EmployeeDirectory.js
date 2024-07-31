@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import EmployeeSearch from './EmployeeSearch';
 import EmployeeForm from './EmployeeForm';
 import EmployeeTable from './EmployeeTable';
 import EmployeeFilter from './EmployeeFilter';
 import { graphQLCommand } from '../util';
-import '../App.css';
+import { Row, Col, Toast, ToastContainer } from 'react-bootstrap';
 
 // Fetch Employees data
 async function fetchEmployees(type) {
@@ -29,6 +28,11 @@ async function postEmployee(employee) {
 function EmployeeDirectory() {
   const [employees, setEmployees] = useState([]);
   const [searchParams, _] = useSearchParams();
+  const [toast, setToast] = useState({
+    show: false,
+    type: 'Danger',
+    message: '',
+  });
   const type = searchParams.get('Type');
 
   useEffect(() => {
@@ -46,43 +50,69 @@ function EmployeeDirectory() {
   };
 
   const deleteEmployee = async id => {
-    const query = `mutation {
-      deleteEmployee(id: "${id}") 
-    }`;
-    const isConfirmed = window.confirm(
-      'Are you sure you want to delete this employee?'
-    );
-    if (isConfirmed) {
-      const result = await graphQLCommand(query);
-      if (result.deleteEmployee) {
-        const data = await fetchEmployees(type);
-        setEmployees(data);
+    const employee = employees.find(employee => employee.id == id);
+    if (employee.currentStatus === 1) {
+      setToast({
+        show: true,
+        type: 'danger',
+        message: 'Cannot delete employees in Working Status',
+      });
+    } else {
+      const query = `mutation {
+        deleteEmployee(id: "${id}") 
+      }`;
+      const isConfirmed = window.confirm(
+        'Are you sure you want to delete this employee?'
+      );
+      if (isConfirmed) {
+        const result = await graphQLCommand(query);
+        if (result.deleteEmployee) {
+          const data = await fetchEmployees(type);
+          setEmployees(data);
+        }
       }
     }
   };
 
   return (
-    <div className='container'>
-      <div className='subContainer'>
-        <div className='toolbarContainer'>
-          <EmployeeSearch />
+    <>
+      <Row className='p-5'>
+        <Col>Will put something here</Col>
+        <Col>
           <EmployeeFilter />
-        </div>
-        <div className='tableContainer'>
-          {employees.length ? (
-            <EmployeeTable
-              employees={employees}
-              deleteHandler={deleteEmployee}
-            />
-          ) : (
-            <div className='noData'>
-              No employees! Please add using the below form
-            </div>
-          )}
-        </div>
+        </Col>
+      </Row>
+      <Row className='p-5 d-flex justify-content-center'>
+        {employees.length ? (
+          <EmployeeTable employees={employees} deleteHandler={deleteEmployee} />
+        ) : (
+          <div className='noData'>
+            {`No ${type} employees! Please add using the below form`}
+          </div>
+        )}
+      </Row>
+      <Row className='p-5'>
         <EmployeeForm apiFunction={setOneEmployee} />
-      </div>
-    </div>
+      </Row>
+      <ToastContainer
+        position='middle-center'
+        className='p-3'
+        style={{ zIndex: 1 }}
+      >
+        <Toast
+          onClose={() => setToast({ show: false, message: '' })}
+          show={toast.show}
+          delay={3000}
+          bg={toast.type}
+          autohide
+        >
+          <Toast.Header>
+            <strong className='me-auto'>Error</strong>
+          </Toast.Header>
+          <Toast.Body>{toast.message}</Toast.Body>
+        </Toast>
+      </ToastContainer>
+    </>
   );
 }
 

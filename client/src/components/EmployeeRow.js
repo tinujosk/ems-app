@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../App.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 function TableRow({ rowData, deleteHandler }) {
+  const isRetired = rowData.currentStatus === 0;
   return (
     <tr>
       <td>{rowData.firstName}</td>
@@ -12,16 +14,23 @@ function TableRow({ rowData, deleteHandler }) {
       <td>{rowData.title}</td>
       <td>{rowData.department}</td>
       <td>{rowData.employeeType}</td>
-      <td>{rowData.currentStatus === 1 ? 'Working' : 'Retired'}</td>
+      <td style={{ color: isRetired ? 'red' : '' }}>
+        {isRetired ? 'Retired' : 'Working'}
+      </td>
       <td>
-        <Link to={`view/${rowData.id}`}>View</Link> |
-        <Link to={`edit/${rowData.id}`}>Edit</Link> |
+        <Link to={`view/${rowData.id}`} className='px-2'>
+          <FontAwesomeIcon icon={faEye} />
+        </Link>
+        <Link to={`edit/${rowData.id}`} className='px-2'>
+          <FontAwesomeIcon icon={faEdit} />
+        </Link>
         <Link
           onClick={() => {
             deleteHandler(rowData.id);
           }}
+          className='px-2'
         >
-          Delete
+          <FontAwesomeIcon icon={faTrash} />
         </Link>
       </td>
     </tr>
