@@ -87,7 +87,7 @@ function EmployeeDirectory() {
           <EmployeeTable employees={employees} deleteHandler={deleteEmployee} />
         ) : (
           <div className='noData'>
-            {`No ${type} employees! Please add using the below form`}
+            {`No ${type || ''} employees! Please add using the below form`}
           </div>
         )}
       </Row>
