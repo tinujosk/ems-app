@@ -30,7 +30,7 @@ function EmployeeDirectory() {
   const [searchParams, _] = useSearchParams();
   const [toast, setToast] = useState({
     show: false,
-    type: 'Danger',
+    type: '',
     message: '',
   });
   const type = searchParams.get('Type');
