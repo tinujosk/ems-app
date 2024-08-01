@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import avatar from '../images/avatar.png';
 import { graphQLCommand } from '../util';
-import '../App.css';
-import { Container, Col, Row, Card } from 'react-bootstrap';
+import { Container, Col, Card } from 'react-bootstrap';
 
 async function fetchEmployee(id) {
   const query = `query { 

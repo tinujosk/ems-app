@@ -1,7 +1,7 @@
 import React from 'react';
 import notFound from '../images/notFound.jpg';
-// import '../App.css';
 import { Container, Image } from 'react-bootstrap';
+import '../App.css';
 
 export default function NotFound() {
   return (
