@@ -1,8 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { createSearchParams, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import { Form, Container, Button } from 'react-bootstrap';
+
 
 export default function EmployeeFilter() {
   const navigate = useNavigate();
@@ -11,9 +12,17 @@ export default function EmployeeFilter() {
 
   return (
     <Container className='d-flex justify-content-center align-items-center p-2'>
+      <Button variant='outline-primary m-2' className={searchParams.get("Retiring") ? 'active': ''}>
+        <Link
+            to={{ pathname: '/employees', search: `?${createSearchParams({...Object.fromEntries(searchParams.entries()), Retiring: true})}` }}
+            className='custom-link d-flex align-items-center justify-content-around'
+          >
+          Upcoming Retirements
+        </Link>
+      </Button>
       <Button variant='outline-primary m-2'>
         <Link
-          to={{ pathname: '/employees', search: '?Type=FullTime' }}
+          to={{ pathname: '/employees', search: `?${createSearchParams({...Object.fromEntries(searchParams.entries()), Type: "FullTime" })}` }}
           className='custom-link'
         >
           FullTime Employees
@@ -28,7 +37,7 @@ export default function EmployeeFilter() {
         name='type'
         value={type || ''}
         onChange={e => {
-          navigate(`/employees?Type=${e.target.value}`);
+          navigate(`/employees?${createSearchParams({...Object.fromEntries(searchParams.entries()), Type: e.target.value })}`);
         }}
         className='m-2 custom-select'
       >

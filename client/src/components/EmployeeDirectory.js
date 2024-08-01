@@ -5,6 +5,9 @@ import EmployeeTable from './EmployeeTable';
 import EmployeeFilter from './EmployeeFilter';
 import { graphQLCommand } from '../util';
 import { Row, Col, Toast, ToastContainer } from 'react-bootstrap';
+import { DateTime } from "luxon";
+
+const RETIREMENT_AGE = 65;
 
 // Fetch Employees data
 async function fetchEmployees(type) {
@@ -25,6 +28,21 @@ async function postEmployee(employee) {
   await graphQLCommand(query, { input: employee });
 }
 
+
+// function to check if the employee is retiring in six months
+function isEmployeeRetiring(employee) {
+  let { age, doj } = employee;
+  // we will consider the date and month from date of joining for date of birth
+  // i.e if dob = "2024-07-23" and age is 62, we will assume the dob as "(2024-62)-07-23" = "1962-07-23"
+  doj = DateTime.fromISO(doj);
+  const dob = doj.minus({ years: age });
+
+  const now = DateTime.now();
+  const sixMonthsFromNow = now.plus({ months: 6});
+  const isRetiringInSixMonths =  sixMonthsFromNow.diff(dob).as("years") > RETIREMENT_AGE;
+  return isRetiringInSixMonths;
+}
+
 function EmployeeDirectory() {
   const [employees, setEmployees] = useState([]);
   const [searchParams, _] = useSearchParams();
@@ -34,14 +52,20 @@ function EmployeeDirectory() {
     message: '',
   });
   const type = searchParams.get('Type');
+  // we will take either `"true"` or `"1"` for the flag
+  const retiring =  ["true", "1"].includes(searchParams.get('Retiring'));
 
   useEffect(() => {
     const apiFunction = async () => {
-      const data = await fetchEmployees(type);
+      let data = await fetchEmployees(type);
+      // if retiring filter is on, we will filter the employee based on their age
+      if (retiring) {
+        data = data.filter(isEmployeeRetiring);
+      }
       setEmployees(data);
     };
     apiFunction();
-  }, [type]);
+  }, [type, retiring]);
 
   const setOneEmployee = async employee => {
     await postEmployee(employee);
