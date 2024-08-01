@@ -20,7 +20,7 @@ export default function EmployeeFilter() {
           Upcoming Retirements
         </Link>
       </Button>
-      <Button variant='outline-primary m-2'>
+      <Button variant='outline-primary m-2' className={searchParams.get("Type") === "FullTime" ? 'active': ''}>
         <Link
           to={{ pathname: '/employees', search: `?${createSearchParams({...Object.fromEntries(searchParams.entries()), Type: "FullTime" })}` }}
           className='custom-link'
