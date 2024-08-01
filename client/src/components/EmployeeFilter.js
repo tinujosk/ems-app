@@ -14,7 +14,6 @@ export default function EmployeeFilter() {
     <Container className='d-flex justify-content-center align-items-center p-2'>
       <Button variant='outline-primary m-2' className={searchParams.get("Retiring") ? 'active': ''}>
         <Link
-            // to={{ pathname: '/employees', search: '?Retiring=true' }}
             to={{ pathname: '/employees', search: `?${createSearchParams({...Object.fromEntries(searchParams.entries()), Retiring: true})}` }}
             className='custom-link d-flex align-items-center justify-content-around'
           >
@@ -23,7 +22,6 @@ export default function EmployeeFilter() {
       </Button>
       <Button variant='outline-primary m-2'>
         <Link
-          // to={{ pathname: '/employees', search: '?Type=FullTime' }}
           to={{ pathname: '/employees', search: `?${createSearchParams({...Object.fromEntries(searchParams.entries()), Type: "FullTime" })}` }}
           className='custom-link'
         >
@@ -39,7 +37,6 @@ export default function EmployeeFilter() {
         name='type'
         value={type || ''}
         onChange={e => {
-          // navigate(`/employees?Type=${e.target.value}`);
           navigate(`/employees?${createSearchParams({...Object.fromEntries(searchParams.entries()), Type: e.target.value })}`);
         }}
         className='m-2 custom-select'

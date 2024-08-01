@@ -31,7 +31,6 @@ async function postEmployee(employee) {
 
 // function to check if the employee is retiring in six months
 function isEmployeeRetiring(employee) {
-  // console.log({ employee });
   let { age, doj } = employee;
   // we will consider the date and month from date of joining for date of birth
   // i.e if dob = "2024-07-23" and age is 62, we will assume the dob as "(2024-62)-07-23" = "1962-07-23"
@@ -41,7 +40,6 @@ function isEmployeeRetiring(employee) {
   const now = DateTime.now();
   const sixMonthsFromNow = now.plus({ months: 6});
   const isRetiringInSixMonths =  sixMonthsFromNow.diff(dob).as("years") > RETIREMENT_AGE;
-  // console.log({ dob: dob.toISO(), doj: doj.toISO(), age: DateTime.now().diff(dob).as("years"), isRetiringInSixMonths });
   return isRetiringInSixMonths;
 }
 
