@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 
 function EmployeeTable({ employees, deleteHandler }) {
   return (
-    <Table>
+    <Table hover>
       <thead>
         <tr>
           <th>First Name</th>
