@@ -77,7 +77,6 @@ function EmployeeDirectory() {
   return (
     <>
       <Row className='p-5'>
-        <Col>Will put something here</Col>
         <Col>
           <EmployeeFilter />
         </Col>
@@ -105,6 +104,7 @@ function EmployeeDirectory() {
           delay={3000}
           bg={toast.type}
           autohide
+          className='text-white'
         >
           <Toast.Header>
             <strong className='me-auto'>Error</strong>

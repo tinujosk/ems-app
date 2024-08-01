@@ -107,7 +107,6 @@ function EmployeeForm({ apiFunction, editMode, values, disableFields }) {
           {editMode ? 'Edit Employee' : 'Add New Employee'}
         </Card.Header>
         <Card.Body>
-          {/* <Card.Title>Special title treatment</Card.Title> */}
           <Card.Text>
             <Form id='employeeForm' onSubmit={handleSubmit}>
               <fieldset>

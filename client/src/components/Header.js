@@ -18,7 +18,7 @@ function Header() {
       data-bs-theme='dark'
     >
       <Container fluid>
-        <Navbar.Brand href='#'>EMS Application</Navbar.Brand>
+        <Navbar.Brand>EMS Application</Navbar.Brand>
         <Navbar.Toggle aria-controls='navbarScroll' />
         <Navbar.Collapse id='navbarScroll'>
           <Nav
@@ -30,7 +30,7 @@ function Header() {
               <NavLink to='/'>Home</NavLink>
             </Nav.Link>
             <Nav.Link>
-              <NavLink to='/'>About</NavLink>
+              <NavLink to='/about'>About</NavLink>
             </Nav.Link>
           </Nav>
           <Form className='d-flex'>

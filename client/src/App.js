@@ -5,7 +5,8 @@ import EmployeeEdit from './components/EmployeeEdit';
 import EmployeeView from './components/EmployeeView';
 import Header from './components/Header';
 import NotFound from './components/NotFound';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
+import About from './components/About';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path='view/:id' element={<EmployeeView />} />
             <Route path='edit/:id' element={<EmployeeEdit />} />
           </Route>
+          <Route path='/about' element={<About />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </Row>

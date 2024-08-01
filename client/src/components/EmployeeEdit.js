@@ -51,7 +51,10 @@ function EmployeeEdit() {
   };
 
   return (
-    <Container className='p-5'>
+    <Container className='p-5 d-flex flex-column align-items-center'>
+      <h2 className='text-muted p-5'>
+        {`Edit ${employee.firstName}'s Details`}
+      </h2>
       <EmployeeForm
         apiFunction={editOneEmployee}
         values={employee}

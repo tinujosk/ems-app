@@ -12,6 +12,18 @@
   color: #ccc;
 }
 
+.card-text p {
+  padding: 10px;
+}
+
+.card-text p:nth-child(odd) {
+  background-color: #f8f9fa; /* Light color for odd rows */
+}
+
+.card-text p:nth-child(even) {
+  background-color: #e9ecef; /* Slightly darker color for even rows */
+}
+
 .noData {
   font-size: 20px;
   font-weight: 700;
@@ -79,12 +91,5 @@
 
 /* NotFound*/
 .notFoundContainer {
-  display: flex;
-  justify-content: center;
   background-color: #306EAF;
-  height: 100vh;
-}
-.notFoundImage {
-  width: 600px;
-  height: 600px;
 }
