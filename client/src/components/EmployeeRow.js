@@ -19,10 +19,10 @@ function TableRow({ rowData, deleteHandler }) {
       </td>
       <td>
         <Link to={`view/${rowData.id}`} className='px-2'>
-          <FontAwesomeIcon icon={faEye} />
+          <FontAwesomeIcon icon={faEye} color='green' />
         </Link>
         <Link to={`edit/${rowData.id}`} className='px-2'>
-          <FontAwesomeIcon icon={faEdit} />
+          <FontAwesomeIcon icon={faEdit} color='grey' />
         </Link>
         <Link
           onClick={() => {
@@ -30,7 +30,7 @@ function TableRow({ rowData, deleteHandler }) {
           }}
           className='px-2'
         >
-          <FontAwesomeIcon icon={faTrash} />
+          <FontAwesomeIcon icon={faTrash} color='#DB5455' />
         </Link>
       </td>
     </tr>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { nameRegex } from '../util';
-import '../App.css';
 import {
   Form,
   Button,
@@ -10,6 +9,7 @@ import {
   Row,
   Col,
 } from 'react-bootstrap';
+import '../App.css';
 
 function EmployeeForm({ apiFunction, editMode, values, disableFields }) {
   const [errors, setErrors] = useState({});

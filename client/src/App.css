@@ -17,11 +17,11 @@
 }
 
 .card-text p:nth-child(odd) {
-  background-color: #f8f9fa; /* Light color for odd rows */
+  background-color: #f8f9fa;
 }
 
 .card-text p:nth-child(even) {
-  background-color: #e9ecef; /* Slightly darker color for even rows */
+  background-color: #e9ecef; 
 }
 
 .noData {
@@ -39,6 +39,11 @@
 
 /* EmployeeTable */
 
+.table-container {
+  max-height: 350px;
+  overflow: scroll;
+}
+
 .table {
   width: 100%;
   max-width: 1200px;
@@ -48,10 +53,12 @@
 }
 
 .table thead {
-  color: #fff;
   position: sticky;
   top: 0;
-  background: #49517d;
+}
+.table thead th{
+  background: #2B3035;
+  color: #fff;
 }
 
 .table th,

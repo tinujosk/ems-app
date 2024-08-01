@@ -81,7 +81,7 @@ function EmployeeDirectory() {
           <EmployeeFilter />
         </Col>
       </Row>
-      <Row className='p-5 d-flex justify-content-center'>
+      <Row className='d-flex justify-content-center table-container'>
         {employees.length ? (
           <EmployeeTable employees={employees} deleteHandler={deleteEmployee} />
         ) : (
