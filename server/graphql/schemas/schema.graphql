@@ -53,6 +53,7 @@ type Employee {
 type Query {
   getEmployees(type: EmployeeType): [Employee!]!
   getEmployee(id: String!): Employee
+   searchEmployees(searchTerm: String): [Employee]
 }
 
 type Mutation {
