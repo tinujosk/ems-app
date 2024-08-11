@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import EmployeeDirectory from './components/EmployeeDirectory';
 import EmployeeEdit from './components/EmployeeEdit';
@@ -11,7 +11,7 @@ import About from './components/About';
 function App() {
   const [searchResults, setSearchResults] = useState(null);
 
-  const handleSearchResults = useMemo(() => (results, searchTerm) => {
+  const handleSearchResults = useMemo(() => (results) => {
     console.log('Search results in App:', results);
     setSearchResults(results);
   }, []);
