@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { graphQLCommand } from '../util';
 
-const SEARCH_EMPLOYEES = `
-  query SearchEmployees($searchTerm: String) {
-    searchEmployees(searchTerm: $searchTerm) {
+const GET_EMPLOYEES = `
+  query GetEmployees($type: EmployeeType, $searchTerm: String) {
+    getEmployees(type: $type, searchTerm: $searchTerm) {
       id
       firstName
       lastName
@@ -18,19 +18,20 @@ const SEARCH_EMPLOYEES = `
   }
 `;
 
-function EmployeeSearch({ onSearchResults }) {
+function EmployeeSearch({ onSearchResults, type }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    
+
     if (searchTerm.trim()) {
       try {
-        const result = await graphQLCommand(SEARCH_EMPLOYEES, {
-          searchTerm: searchTerm.trim()
+        const result = await graphQLCommand(GET_EMPLOYEES, {
+          type: type || null,
+          searchTerm: searchTerm.trim(),
         });
-        console.log('Search results:', result.searchEmployees);
-        onSearchResults(result.searchEmployees, searchTerm);
+        console.log('Search results:', result.getEmployees);
+        onSearchResults(result.getEmployees, searchTerm);
       } catch (error) {
         console.error('Error searching employees:', error);
         onSearchResults([], searchTerm);
@@ -38,7 +39,7 @@ function EmployeeSearch({ onSearchResults }) {
     } else {
       onSearchResults([]);
     }
-  }
+  };
 
   return (
     <Form className='d-flex' onSubmit={handleSearch}>

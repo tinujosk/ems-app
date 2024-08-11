@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import EmployeeDirectory from './components/EmployeeDirectory';
 import EmployeeEdit from './components/EmployeeEdit';
 import EmployeeView from './components/EmployeeView';
-import EmployeeSearch from './components/EmployeeSearch';
 import Header from './components/Header';
 import NotFound from './components/NotFound';
 import { Row, Col } from 'react-bootstrap';
@@ -43,7 +42,7 @@ function App() {
             />
             <Route path='view/:id' element={<EmployeeView />} />
             <Route path='edit/:id' element={<EmployeeEdit />} />
-            <Route path='search' element={<EmployeeSearch onSearchResults={handleSearchResults} />} />
+
           </Route>
           <Route path='/about' element={<About />} />
           <Route path='*' element={<NotFound />} />

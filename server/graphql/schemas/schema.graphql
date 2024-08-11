@@ -51,10 +51,10 @@ type Employee {
 }
 
 type Query {
-  getEmployees(type: EmployeeType): [Employee!]!
+  getEmployees(type: EmployeeType, searchTerm: String): [Employee!]!
   getEmployee(id: String!): Employee
-   searchEmployees(searchTerm: String): [Employee]
 }
+
 
 type Mutation {
   addEmployee(employee: InputEmployee!): Employee!

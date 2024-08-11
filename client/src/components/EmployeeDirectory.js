@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import EmployeeForm from './EmployeeForm';
 import EmployeeTable from './EmployeeTable';
@@ -6,24 +6,45 @@ import EmployeeFilter from './EmployeeFilter';
 import { graphQLCommand } from '../util';
 import { Row, Col, Toast, ToastContainer, Button } from 'react-bootstrap';
 import { DateTime } from "luxon";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const RETIREMENT_AGE = 65;
 
-async function fetchEmployees(type) {
-  const query = `query {
-    getEmployees(type:${type}){id, firstName, lastName, age, doj, title, department, employeeType, currentStatus}
-  }`;
+async function fetchEmployees(type, searchTerm) {
+  const query = `
+    query GetEmployees($type: EmployeeType, $searchTerm: String) {
+      getEmployees(type: $type, searchTerm: $searchTerm) {
+        id
+        firstName
+        lastName
+        age
+        doj
+        title
+        department
+        employeeType
+        currentStatus
+      }
+    }
+  `;
 
-  const data = await graphQLCommand(query);
+  const data = await graphQLCommand(query, { type, searchTerm });
   return data?.getEmployees;
 }
 
 async function postEmployee(employee) {
-  const query = `mutation addEmployee($input:InputEmployee!) {
-    addEmployee(employee: $input) {firstName, lastName, age, doj, title, department, employeeType, currentStatus}
-  }`;
+  const query = `
+    mutation addEmployee($input: InputEmployee!) {
+      addEmployee(employee: $input) {
+        firstName
+        lastName
+        age
+        doj
+        title
+        department
+        employeeType
+        currentStatus
+      }
+    }
+  `;
 
   await graphQLCommand(query, { input: employee });
 }
@@ -34,14 +55,13 @@ function isEmployeeRetiring(employee) {
   const dob = doj.minus({ years: age });
 
   const now = DateTime.now();
-  const sixMonthsFromNow = now.plus({ months: 6});
-  const isRetiringInSixMonths =  sixMonthsFromNow.diff(dob).as("years") > RETIREMENT_AGE;
-  return isRetiringInSixMonths;
+  const sixMonthsFromNow = now.plus({ months: 6 });
+  return sixMonthsFromNow.diff(dob).as("years") > RETIREMENT_AGE;
 }
 
 function EmployeeDirectory({ searchResults, resetSearch }) {
   const [employees, setEmployees] = useState([]);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [toast, setToast] = useState({
     show: false,
     type: '',
@@ -53,7 +73,7 @@ function EmployeeDirectory({ searchResults, resetSearch }) {
 
   const fetchAndSetEmployees = useCallback(async () => {
     try {
-      let data = await fetchEmployees(type);
+      let data = await fetchEmployees(type, searchParams.get('searchTerm') || '');
       if (retiring) {
         data = data.filter(isEmployeeRetiring);
       }
@@ -66,7 +86,7 @@ function EmployeeDirectory({ searchResults, resetSearch }) {
         message: 'Error fetching employees. Please try again.',
       });
     }
-  }, [type, retiring]);
+  }, [type, retiring, searchParams]);
 
   useEffect(() => {
     if (searchResults !== null) {
@@ -109,12 +129,8 @@ function EmployeeDirectory({ searchResults, resetSearch }) {
         message: 'Cannot delete employees in Working Status',
       });
     } else {
-      const query = `mutation {
-        deleteEmployee(id: "${id}") 
-      }`;
-      const isConfirmed = window.confirm(
-        'Are you sure you want to delete this employee?'
-      );
+      const query = `mutation { deleteEmployee(id: "${id}") }`;
+      const isConfirmed = window.confirm('Are you sure you want to delete this employee?');
       if (isConfirmed) {
         try {
           const result = await graphQLCommand(query);
@@ -133,11 +149,12 @@ function EmployeeDirectory({ searchResults, resetSearch }) {
     }
   };
 
-  const handleBackClick = () => {
-    if (typeof resetSearch === 'function') {
-      resetSearch();
-    } else {
-      console.error('resetSearch is not a function');
+  const handleReset = () => {
+    // Clear search term and filters
+    setSearchParams({});
+    setEmployees([]); // Clear employees on reset
+    if (resetSearch) {
+      resetSearch(); // Trigger parent component reset
     }
   };
 
@@ -145,17 +162,14 @@ function EmployeeDirectory({ searchResults, resetSearch }) {
     <>
       <Row className='p-5'>
         <Col>
-          
-          <EmployeeFilter />
+          <EmployeeFilter onReset={handleReset} />
           {isSearchPerformed && (
             <Button 
               variant="link" 
-              onClick={handleBackClick} 
+              onClick={handleReset} 
               className="mb-3 d-flex align-items-center"
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
-              <FontAwesomeIcon icon={faArrowLeft} size="lg" />
-              <span className="ms-2">All employees</span>
             </Button>
           )}
         </Col>
@@ -168,7 +182,6 @@ function EmployeeDirectory({ searchResults, resetSearch }) {
         )}
         {employees.length > 0 && (
           <>
-            
             <EmployeeTable employees={employees} deleteHandler={deleteEmployee} />
           </>
         )}
