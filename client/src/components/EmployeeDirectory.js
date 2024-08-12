@@ -1,17 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Row, Col, Toast, ToastContainer } from 'react-bootstrap';
+import { DateTime, Interval } from 'luxon';
 import EmployeeForm from './EmployeeForm';
 import EmployeeTable from './EmployeeTable';
 import EmployeeFilter from './EmployeeFilter';
 import { graphQLCommand } from '../util';
-import { Row, Col, Toast, ToastContainer, Button } from 'react-bootstrap';
-import { DateTime } from "luxon";
-
-const RETIREMENT_AGE = 65;
 
 async function fetchEmployees(type, searchTerm) {
   const query = `
-    query GetEmployees($type: EmployeeType, $searchTerm: String) {
+    query getEmployees($type: EmployeeType, $searchTerm: String) {
       getEmployees(type: $type, searchTerm: $searchTerm) {
         id
         firstName
@@ -52,66 +50,53 @@ async function postEmployee(employee) {
 function isEmployeeRetiring(employee) {
   let { age, doj } = employee;
   doj = DateTime.fromISO(doj);
-  const dob = doj.minus({ years: age });
-
+  const dob = doj.minus({ years: age + 1 });
   const now = DateTime.now();
+  const sixtyFifthBirthday = dob.plus({ years: 65 });
   const sixMonthsFromNow = now.plus({ months: 6 });
-  return sixMonthsFromNow.diff(dob).as("years") > RETIREMENT_AGE;
+
+  return Interval.fromDateTimes(now, sixMonthsFromNow).contains(
+    sixtyFifthBirthday
+  );
 }
 
-function EmployeeDirectory({ searchResults, resetSearch }) {
+function EmployeeDirectory({ searchTerm }) {
   const [employees, setEmployees] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const [toast, setToast] = useState({
     show: false,
     type: '',
     message: '',
   });
-  const [isSearchPerformed, setIsSearchPerformed] = useState(false);
-  const type = searchParams.get('Type');
-  const retiring = ["true", "1"].includes(searchParams.get('Retiring'));
 
-  const fetchAndSetEmployees = useCallback(async () => {
+  const type = searchParams.get('Type');
+  const retiring = ['true', '1'].includes(searchParams.get('Retiring'));
+
+  const fetchAndSetEmployees = async () => {
     try {
-      let data = await fetchEmployees(type, searchParams.get('searchTerm') || '');
+      let data = await fetchEmployees(type, searchTerm);
       if (retiring) {
         data = data.filter(isEmployeeRetiring);
       }
       setEmployees(data);
     } catch (error) {
-      console.error('Error fetching employees:', error);
       setToast({
         show: true,
         type: 'danger',
         message: 'Error fetching employees. Please try again.',
       });
     }
-  }, [type, retiring, searchParams]);
+  };
 
   useEffect(() => {
-    if (searchResults !== null) {
-      setIsSearchPerformed(true);
-      if (searchResults.length > 0) {
-        let filteredResults = searchResults;
-        if (retiring) {
-          filteredResults = filteredResults.filter(isEmployeeRetiring);
-        }
-        setEmployees(filteredResults);
-      } else {
-        setEmployees([]);
-      }
-    } else {
-      setIsSearchPerformed(false);
-      fetchAndSetEmployees();
-    }
-  }, [searchResults, retiring, fetchAndSetEmployees, searchParams]);
+    fetchAndSetEmployees();
+  }, [type, retiring, searchTerm]);
 
-  const setOneEmployee = async (employee) => {
+  const setOneEmployee = async employee => {
     try {
       await postEmployee(employee);
       fetchAndSetEmployees();
     } catch (error) {
-      console.error('Error adding employee:', error);
       setToast({
         show: true,
         type: 'danger',
@@ -120,8 +105,8 @@ function EmployeeDirectory({ searchResults, resetSearch }) {
     }
   };
 
-  const deleteEmployee = async (id) => {
-    const employee = employees.find((employee) => employee.id == id);
+  const deleteEmployee = async id => {
+    const employee = employees.find(employee => employee.id == id);
     if (employee.currentStatus === 1) {
       setToast({
         show: true,
@@ -130,7 +115,9 @@ function EmployeeDirectory({ searchResults, resetSearch }) {
       });
     } else {
       const query = `mutation { deleteEmployee(id: "${id}") }`;
-      const isConfirmed = window.confirm('Are you sure you want to delete this employee?');
+      const isConfirmed = window.confirm(
+        'Are you sure you want to delete this employee?'
+      );
       if (isConfirmed) {
         try {
           const result = await graphQLCommand(query);
@@ -149,44 +136,26 @@ function EmployeeDirectory({ searchResults, resetSearch }) {
     }
   };
 
-  const handleReset = () => {
-    // Clear search term and filters
-    setSearchParams({});
-    setEmployees([]); // Clear employees on reset
-    if (resetSearch) {
-      resetSearch(); // Trigger parent component reset
-    }
-  };
-
   return (
     <>
       <Row className='p-5'>
+        {searchTerm && (
+          <Row className='text-center p-3'>
+            <h2>{`Search results for "${searchTerm}"`}</h2>
+          </Row>
+        )}
         <Col>
-          <EmployeeFilter onReset={handleReset} />
-          {isSearchPerformed && (
-            <Button 
-              variant="link" 
-              onClick={handleReset} 
-              className="mb-3 d-flex align-items-center"
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-            </Button>
-          )}
+          <EmployeeFilter />
         </Col>
       </Row>
       <Row className='d-flex justify-content-center table-container'>
-        {isSearchPerformed && employees.length === 0 && (
+        {employees.length ? (
+          <EmployeeTable employees={employees} deleteHandler={deleteEmployee} />
+        ) : (
           <div className='noData'>
-            No matching results found. Please modify your search or add a new employee using the form below.
+            No matching results found. Please modify your search or add a new
+            employee using the form below.
           </div>
-        )}
-        {employees.length > 0 && (
-          <>
-            <EmployeeTable employees={employees} deleteHandler={deleteEmployee} />
-          </>
-        )}
-        {!isSearchPerformed && employees.length === 0 && (
-          <div className='loading'>Loading employees...</div>
         )}
       </Row>
       <Row className='p-5'>
@@ -198,7 +167,7 @@ function EmployeeDirectory({ searchResults, resetSearch }) {
         style={{ zIndex: 1 }}
       >
         <Toast
-          onClose={() => setToast({ show: false, message: '' })}
+          onClose={() => setToast({ show: false, type: '', message: '' })}
           show={toast.show}
           delay={3000}
           bg={toast.type}

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import EmployeeSearch from './EmployeeSearch';
 
-function Header({ onSearchResults }) {
+function Header({ handleSearch }) {
   return (
     <Navbar
       expand='lg'
@@ -20,10 +20,14 @@ function Header({ onSearchResults }) {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <Nav.Link as={NavLink} to='/'>Home</Nav.Link>
-            <Nav.Link as={NavLink} to='/about'>About</Nav.Link>
+            <Nav.Link as={NavLink} to='/'>
+              Home
+            </Nav.Link>
+            <Nav.Link as={NavLink} to='/about'>
+              About
+            </Nav.Link>
           </Nav>
-          <EmployeeSearch onSearchResults={onSearchResults} />
+          <EmployeeSearch handleSearch={handleSearch} />
         </Navbar.Collapse>
       </Container>
     </Navbar>

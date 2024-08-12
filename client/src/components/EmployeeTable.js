@@ -3,7 +3,7 @@ import TableRow from './EmployeeRow';
 import { Table } from 'react-bootstrap';
 
 function EmployeeTable({ employees, deleteHandler }) {
-  console.log('EmployeeTable received employees:', employees);
+  // console.log('EmployeeTable received employees:', employees);
 
   return (
     <Table hover>
@@ -23,7 +23,7 @@ function EmployeeTable({ employees, deleteHandler }) {
       <tbody>
         {employees.length > 0 ? (
           employees.map((employee, idx) => {
-            console.log(`Rendering employee ${idx}:`, employee);
+            // console.log(`Rendering employee ${idx}:`, employee);
             return (
               <TableRow
                 key={employee.id || idx}
