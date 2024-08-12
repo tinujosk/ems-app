@@ -4,8 +4,21 @@ import { GQLDate } from './scalars.js';
 
 export const resolvers = {
   Query: {
-    getEmployees: async (_, { type }) =>
-      await Employee.find(type ? { employeeType: type } : {}),
+    getEmployees: async (_, { type, searchTerm }) => {
+      const regex = new RegExp(searchTerm.split(' ').join('|'), 'i');
+      const query = {
+        $and: [
+          {
+            $or: [
+              { firstName: { $regex: regex, $type: 'string' } },
+              { lastName: { $regex: regex, $type: 'string' } },
+            ],
+          },
+          type ? { employeeType: type } : {},
+        ],
+      };
+      return await Employee.find(query);
+    },
     getEmployee: async (_, { id }) => await Employee.findById(id),
   },
 

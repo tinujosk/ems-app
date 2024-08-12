@@ -3,6 +3,8 @@ import TableRow from './EmployeeRow';
 import { Table } from 'react-bootstrap';
 
 function EmployeeTable({ employees, deleteHandler }) {
+  // console.log('EmployeeTable received employees:', employees);
+
   return (
     <Table hover>
       <thead>
@@ -19,15 +21,22 @@ function EmployeeTable({ employees, deleteHandler }) {
         </tr>
       </thead>
       <tbody>
-        {employees.map((employee, idx) => {
-          return (
-            <TableRow
-              key={idx}
-              rowData={employee}
-              deleteHandler={deleteHandler}
-            />
-          );
-        })}
+        {employees.length > 0 ? (
+          employees.map((employee, idx) => {
+            // console.log(`Rendering employee ${idx}:`, employee);
+            return (
+              <TableRow
+                key={employee.id || idx}
+                rowData={employee}
+                deleteHandler={deleteHandler}
+              />
+            );
+          })
+        ) : (
+          <tr>
+            <td colSpan={9}>No employees found.</td>
+          </tr>
+        )}
       </tbody>
     </Table>
   );

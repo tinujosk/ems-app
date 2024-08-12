@@ -1,8 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Container, Navbar, Nav, Form, Button } from 'react-bootstrap';
+import { Container, Navbar, Nav } from 'react-bootstrap';
+import EmployeeSearch from './EmployeeSearch';
 
-function Header() {
+function Header({ handleSearch }) {
   return (
     <Navbar
       expand='lg'
@@ -19,22 +20,14 @@ function Header() {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <Nav.Link>
-              <NavLink to='/'>Home</NavLink>
+            <Nav.Link as={NavLink} to='/'>
+              Home
             </Nav.Link>
-            <Nav.Link>
-              <NavLink to='/about'>About</NavLink>
+            <Nav.Link as={NavLink} to='/about'>
+              About
             </Nav.Link>
           </Nav>
-          <Form className='d-flex'>
-            <Form.Control
-              type='search'
-              placeholder='Search'
-              className='me-2'
-              aria-label='Search'
-            />
-            <Button variant='outline-success'>Search</Button>
-          </Form>
+          <EmployeeSearch handleSearch={handleSearch} />
         </Navbar.Collapse>
       </Container>
     </Navbar>

@@ -12,7 +12,6 @@ export async function graphQLCommand(query, variables) {
 
     if (response.ok) {
       const result = await response.json();
-      console.log('Data from server:', result.data);
       return result.data;
     } else {
       console.log('Error in sending data to server:', response.statusText);

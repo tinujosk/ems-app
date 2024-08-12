@@ -1,49 +1,66 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Row, Col, Toast, ToastContainer } from 'react-bootstrap';
+import { DateTime, Interval } from 'luxon';
 import EmployeeForm from './EmployeeForm';
 import EmployeeTable from './EmployeeTable';
 import EmployeeFilter from './EmployeeFilter';
 import { graphQLCommand } from '../util';
-import { Row, Col, Toast, ToastContainer } from 'react-bootstrap';
-import { DateTime } from "luxon";
 
-const RETIREMENT_AGE = 65;
+async function fetchEmployees(type, searchTerm) {
+  const query = `
+    query getEmployees($type: EmployeeType, $searchTerm: String) {
+      getEmployees(type: $type, searchTerm: $searchTerm) {
+        id
+        firstName
+        lastName
+        age
+        doj
+        title
+        department
+        employeeType
+        currentStatus
+      }
+    }
+  `;
 
-// Fetch Employees data
-async function fetchEmployees(type) {
-  const query = `query {
-  getEmployees(type:${type}){id, firstName, lastName, age, doj, title, department, employeeType, currentStatus}
-  }`;
-
-  const data = await graphQLCommand(query);
+  const data = await graphQLCommand(query, { type, searchTerm });
   return data?.getEmployees;
 }
 
-// Add a new Employee
 async function postEmployee(employee) {
-  const query = `mutation addEmployee($input:InputEmployee!) {
-  addEmployee(employee: $input) {firstName, lastName, age, doj, title, department, employeeType, currentStatus}
-  }`;
+  const query = `
+    mutation addEmployee($input: InputEmployee!) {
+      addEmployee(employee: $input) {
+        firstName
+        lastName
+        age
+        doj
+        title
+        department
+        employeeType
+        currentStatus
+      }
+    }
+  `;
 
   await graphQLCommand(query, { input: employee });
 }
 
-
-// function to check if the employee is retiring in six months
 function isEmployeeRetiring(employee) {
   let { age, doj } = employee;
-  // we will consider the date and month from date of joining for date of birth
-  // i.e if dob = "2024-07-23" and age is 62, we will assume the dob as "(2024-62)-07-23" = "1962-07-23"
   doj = DateTime.fromISO(doj);
-  const dob = doj.minus({ years: age });
-
+  const dob = doj.minus({ years: age + 1 });
   const now = DateTime.now();
-  const sixMonthsFromNow = now.plus({ months: 6});
-  const isRetiringInSixMonths =  sixMonthsFromNow.diff(dob).as("years") > RETIREMENT_AGE;
-  return isRetiringInSixMonths;
+  const sixtyFifthBirthday = dob.plus({ years: 65 });
+  const sixMonthsFromNow = now.plus({ months: 6 });
+
+  return Interval.fromDateTimes(now, sixMonthsFromNow).contains(
+    sixtyFifthBirthday
+  );
 }
 
-function EmployeeDirectory() {
+function EmployeeDirectory({ searchTerm }) {
   const [employees, setEmployees] = useState([]);
   const [searchParams, _] = useSearchParams();
   const [toast, setToast] = useState({
@@ -51,26 +68,41 @@ function EmployeeDirectory() {
     type: '',
     message: '',
   });
-  const type = searchParams.get('Type');
-  // we will take either `"true"` or `"1"` for the flag
-  const retiring =  ["true", "1"].includes(searchParams.get('Retiring'));
 
-  useEffect(() => {
-    const apiFunction = async () => {
-      let data = await fetchEmployees(type);
-      // if retiring filter is on, we will filter the employee based on their age
+  const type = searchParams.get('Type');
+  const retiring = ['true', '1'].includes(searchParams.get('Retiring'));
+
+  const fetchAndSetEmployees = async () => {
+    try {
+      let data = await fetchEmployees(type, searchTerm);
       if (retiring) {
         data = data.filter(isEmployeeRetiring);
       }
       setEmployees(data);
-    };
-    apiFunction();
-  }, [type, retiring]);
+    } catch (error) {
+      setToast({
+        show: true,
+        type: 'danger',
+        message: 'Error fetching employees. Please try again.',
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchAndSetEmployees();
+  }, [type, retiring, searchTerm]);
 
   const setOneEmployee = async employee => {
-    await postEmployee(employee);
-    const data = await fetchEmployees(type);
-    setEmployees(data);
+    try {
+      await postEmployee(employee);
+      fetchAndSetEmployees();
+    } catch (error) {
+      setToast({
+        show: true,
+        type: 'danger',
+        message: 'Error adding employee. Please try again.',
+      });
+    }
   };
 
   const deleteEmployee = async id => {
@@ -82,17 +114,23 @@ function EmployeeDirectory() {
         message: 'Cannot delete employees in Working Status',
       });
     } else {
-      const query = `mutation {
-        deleteEmployee(id: "${id}") 
-      }`;
+      const query = `mutation { deleteEmployee(id: "${id}") }`;
       const isConfirmed = window.confirm(
         'Are you sure you want to delete this employee?'
       );
       if (isConfirmed) {
-        const result = await graphQLCommand(query);
-        if (result.deleteEmployee) {
-          const data = await fetchEmployees(type);
-          setEmployees(data);
+        try {
+          const result = await graphQLCommand(query);
+          if (result.deleteEmployee) {
+            fetchAndSetEmployees();
+          }
+        } catch (error) {
+          console.error('Error deleting employee:', error);
+          setToast({
+            show: true,
+            type: 'danger',
+            message: 'Error deleting employee. Please try again.',
+          });
         }
       }
     }
@@ -101,6 +139,11 @@ function EmployeeDirectory() {
   return (
     <>
       <Row className='p-5'>
+        {searchTerm && (
+          <Row className='text-center p-3'>
+            <h2>{`Search results for "${searchTerm}"`}</h2>
+          </Row>
+        )}
         <Col>
           <EmployeeFilter />
         </Col>
@@ -110,7 +153,8 @@ function EmployeeDirectory() {
           <EmployeeTable employees={employees} deleteHandler={deleteEmployee} />
         ) : (
           <div className='noData'>
-            {`No ${type || ''} employees! Please add using the below form`}
+            No matching results found. Please modify your search or add a new
+            employee using the form below.
           </div>
         )}
       </Row>
@@ -123,7 +167,7 @@ function EmployeeDirectory() {
         style={{ zIndex: 1 }}
       >
         <Toast
-          onClose={() => setToast({ show: false, message: '' })}
+          onClose={() => setToast({ show: false, type: '', message: '' })}
           show={toast.show}
           delay={3000}
           bg={toast.type}
