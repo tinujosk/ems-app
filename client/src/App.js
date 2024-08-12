@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import EmployeeDirectory from './components/EmployeeDirectory';
