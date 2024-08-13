@@ -171,7 +171,7 @@ function EmployeeDirectory({ searchTerm }) {
           show={toast.show}
           delay={3000}
           bg={toast.type}
-          autohide
+          autohide={true}
           className='text-white'
         >
           <Toast.Header>

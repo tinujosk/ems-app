@@ -77,10 +77,10 @@ function EmployeeForm({ apiFunction, editMode, values, disableFields }) {
             }
             break;
           case 'age':
-            if (parseInt(fieldValue) < 20 || parseInt(fieldValue) > 65) {
+            if (parseInt(fieldValue) < 20 || parseInt(fieldValue) > 64) {
               formErrors[
                 field
-              ] = `${nameMapping[field]}  should be between 20 and 65`;
+              ] = `${nameMapping[field]}  should be between 20 and 64`;
             }
             break;
           default:
