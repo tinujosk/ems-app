@@ -49,9 +49,9 @@ async function postEmployee(employee) {
 
 function isEmployeeRetiring(employee) {
   let { age, doj } = employee;
-  doj = DateTime.fromISO(doj);
-  const dob = doj.minus({ years: age + 1 });
   const now = DateTime.now();
+  doj = DateTime.fromISO(doj).set({ year: now.year });
+  const dob = doj.minus({ years: age + 1 });
   const sixtyFifthBirthday = dob.plus({ years: 65 });
   const sixMonthsFromNow = now.plus({ months: 6 });
 
